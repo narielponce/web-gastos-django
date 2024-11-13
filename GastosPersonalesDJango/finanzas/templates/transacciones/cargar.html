@@ -1,0 +1,94 @@
+<!-- templates/inventory/cargar.html -->
+
+{% extends 'base_dashboard.html' %} {% load form_tags %}
+
+<!-- Carga los filtros personalizados-->
+
+{% block title %}Ingreso de Material{% endblock %}
+
+{% block header %}Registrar movimiento{% endblock%}
+
+{% block content %}
+
+    <div class="box">
+
+        <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+            <div class="field">
+                <label class="label">Fecha operación</label>
+                <div class="control">{{ form.fecha_transaccion|add_class:" input date" }}</div>
+            </div>
+
+            <div class="field">
+                <label class="label">Tipo movimiento</label>
+                <div class="control">{{ form.tipo|add_class:"input" }}</div>
+            </div>
+
+            <div class="field">
+                <label class="label">Integrante</label>
+                <div class="control">{{ form.integrante|add_class:"input" }}</div>
+            </div>
+
+            <div class="field">
+                <label class="label">Categoría</label>
+                <div class="control">{{ form.categoria|add_class:"input" }}</div>
+            </div>
+
+            <div class="field">
+                <label class="label">Descripción</label>
+                <div class="control">{{ form.descripcion|add_class:"input" }}</div>
+            </div>
+
+            <div class="field">
+                <label class="label">Forma de pago</label>
+                <div class="control">{{ form.metodo_pago|add_class:"input" }}</div>
+            </div>
+
+            <div class="field">
+                <label class="label">Monto</label>
+                <div class="control">{{ form.monto|add_class:"input" }}</div>
+            </div>
+
+            <div class="field">
+                <label class="label">Estado</label>
+                <div class="control">{{ form.estado|add_class:"input" }}</div>
+            </div>
+
+            <!-- Campo de cuotas que será ocultado inicialmente -->
+            <div class="field" id="cuotas-field" style="display: none;">
+                <label class="label">{{ form.numero_cuotas.label }}</label>
+                <div class="control">{{ form.numero_cuotas|add_class:"input" }}</div>
+            </div>
+
+            <div class="control">
+                <button type="submit" class="button is-primary">Registrar Ingreso</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- JavaScript para mostrar/ocultar el campo de cuotas en función del estado y método de pago -->
+    <script>
+        function toggleCuotasField() {
+            const estado = document.getElementById('id_estado').value;
+            const metodoPago = document.getElementById('id_metodo_pago').options[document.getElementById('id_metodo_pago').selectedIndex].text;
+            const cuotasField = document.getElementById('cuotas-field');
+
+            // Muestra el campo de cuotas solo si el estado es "Cuotificado" y el método de pago es "Tarjeta Crédito"
+            if (estado === 'Cuotificado' && metodoPago === 'Tarjeta Crédito') {
+                cuotasField.style.display = 'block';
+            } else {
+                cuotasField.style.display = 'none';
+            }
+        }
+
+        // Inicializar la visibilidad del campo de cuotas al cargar la página
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById('id_estado').addEventListener('change', toggleCuotasField);
+            document.getElementById('id_metodo_pago').addEventListener('change', toggleCuotasField);
+            toggleCuotasField();  // Llamada inicial para establecer el estado del campo de cuotas
+        });
+    </script>
+    
+
+{% endblock %}

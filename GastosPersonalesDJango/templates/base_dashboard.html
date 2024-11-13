@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  class="has-aside-left has-aside-mobile-transition has-navbar-fixed-top has-aside-expanded"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{% block title %}Dashboard{% endblock %}</title>
+
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'css/main.min.css' %}" />
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Nunito"
+      rel="stylesheet"
+      type="text/css"
+    />
+
+    <style>
+      /* El body y html ocupan el 100% */
+      html,
+      body {
+        height: 100%;
+      }
+
+      /* El contenedor principal ocupará todo el espacio disponible menos el footer */
+      .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 90vh;
+      }
+
+      /* El contenido principal debe crecer para ocupar el espacio disponible */
+      .content {
+        flex: 1;
+      }
+
+      /* Estilo para que el footer siempre esté en la parte inferior */
+      .footer {
+        background-color: #f8f9fa;
+        padding: 1rem 1.5rem;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        height: 60px;
+        z-index: 1000;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app" class="content-wrapper">
+      <!-- Barra superior -->
+      <nav id="navbar-main" class="navbar has-background-grey is-fixed-top">
+        <div class="navbar-brand">
+          <a class="navbar-item is-hidden-desktop jb-aside-mobile-toggle">
+            <span class="icon"
+              ><i class="mdi mdi-forwardburger mdi-24px"></i
+            ></span>
+          </a>
+          <!--<div class="navbar-item has-control">
+                    <div class="control">
+                        <input placeholder="Search everywhere..." class="input" />
+                    </div>
+                </div>-->
+        </div>
+
+        <div class="navbar-brand is-right">
+          <a
+            class="navbar-item is-hidden-desktop jb-navbar-menu-toggle"
+            data-target="navbar-menu"
+          >
+            <span class="icon"><i class="mdi mdi-dots-vertical"></i></span>
+          </a>
+        </div>
+
+        <div class="navbar-item is-hoverable mx-2">
+          <h4 class="title is-6 has-text-white">
+            Bienvenido, {{ request.user.username }}
+          </h4>
+        </div>
+
+        <div class="navbar-menu fadeIn animated faster" id="navbar-menu">
+          <div class="navbar-end">
+            <div class="navbar-item is-hoverable mx-2">
+              <form method="post" action="#">
+                {% csrf_token %}
+                <button type="submit" class="button is-link">
+                  Cerrar sesión
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Barra lateral -->
+      <aside class="aside is-placed-left is-expanded">
+        <div class="aside-tools">
+          <div class="aside-tools-label">
+            <span><b>Inventory</b> System</span>
+          </div>
+        </div>
+        <div class="menu is-menu-main">
+          <p class="menu-label">General</p>
+          <ul class="menu-list">
+            <li>
+              <a
+                href="{% url 'dashboard' %}"
+                class="is-active router-link-active has-icon"
+              >
+                <span class="icon"><i class="mdi mdi-desktop-mac"></i></span>
+                <span class="menu-item-label">Dashboard</span>
+              </a>
+            </li>
+          </ul>
+          <p class="menu-label">Operaciones</p>
+          <ul class="menu-list">
+            <li>
+              <a href="{% url 'lista_transacciones' %}" class="has-icon">
+                <span class="icon"
+                  ><i class="mdi mdi-briefcase-download"></i
+                ></span>
+                <span class="menu-item-label">Consulta Movimientos</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="{% url 'cargar_transaccion' %}" class="has-icon">
+                <span class="icon"
+                  ><i class="mdi mdi-briefcase-check"></i
+                ></span>
+                <span class="menu-item-label">Ingreso Movimiento</span>
+              </a>
+            </li>
+            
+            <li>
+              <a class="has-icon has-dropdown-icon">
+                <span class="icon"><i class="mdi mdi-view-list"></i></span>
+                <span class="menu-item-label">Informes</span>
+                <div class="dropdown-icon">
+                  <span class="icon"><i class="mdi mdi-plus"></i></span>
+                </div>
+              </a>
+              <ul>
+                <li>
+                  <a href="{% url 'informe1' %}">
+                    <span>Ingresos vs Gastos</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'informe_compras_tarjeta' %}">
+                    <span>Generacion resumen TC</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <p class="menu-label">Sobre mi</p>
+          <ul class="menu-list">
+            <li>
+              <a
+                href="https://www.linkedin.com/in/narielponce/"
+                target="_blank"
+                class="has-icon"
+              >
+                <span class="icon"><i class="mdi mdi-linkedin-box"></i></span>
+                <span class="menu-item-label">LinkedIn</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://justboil.me/bulma-admin-template/free-html-dashboard/"
+                class="has-icon"
+              >
+                <span class="icon"><i class="mdi mdi-help-circle"></i></span>
+                <span class="menu-item-label">About</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- Titulo con contenido variable -->
+      <section class="hero is-hero-bar mt-2">
+        <div class="hero-body">
+          <div class="level">
+            <div class="level-left">
+              <div class="level-item">
+                <h3 class="title">{% block header %}{% endblock %}</h3>
+              </div>
+            </div>
+            <div class="level-right" style="display: none">
+              <div class="level-item"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloque principal -->
+      <section class="section is-main-section content mt-7">
+        <div class="container">{% block content %} {% endblock%}</div>
+      </section>
+
+      <!-- Pie de página -->
+      <footer class="footer">
+        <div class="container-fluid">
+          <div class="level">
+            <div class="level-left">
+              <div class="level-item">© 2024, Ariel Ponce</div>
+              <div class="level-item">
+                <!--<a href="#" style="height: 20px">
+                            <img src="https://img.shields.io/github/v/release/vikdiesel/admin-one-bulma-dashboard?color=%23999"
+                            /></a>-->
+              </div>
+            </div>
+
+            <div class="level-right">
+              <div class="level-item">
+                <div class="logo">
+                  <!--<a href="#">
+                                <img src="img/justboil-logo.svg" alt="JustBoil.me"
+                                /></a>-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Scripts below are for demo only -->
+    <script type="text/javascript" src="{% static 'js/main.min.js' %}"></script>
+    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/chart.sample.min.js' %}"></script>-->
+
+    <!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css"
+    />
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const $navbarBurgers = Array.prototype.slice.call(
+          document.querySelectorAll(".navbar-burger"),
+          0
+        );
+
+        if ($navbarBurgers.length > 0) {
+          $navbarBurgers.forEach((el) => {
+            el.addEventListener("click", () => {
+              const target = el.dataset.target;
+              const $target = document.getElementById(target);
+
+              el.classList.toggle("is-active");
+              $target.classList.toggle("is-active");
+            });
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

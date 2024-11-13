@@ -1,0 +1,44 @@
+{% extends 'base_dashboard.html' %} {% load form_tags %}
+
+<!-- Carga los filtros personalizados-->
+
+{% block title %}Movimientos{% endblock %}
+
+{% block header %}Listado de movimientos{% endblock%}
+
+{% block content %}
+
+{% load custom_filters %}
+
+<table class="table is-striped is-hoverable is-fullwidth">
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Fecha operación</th>
+        <th>Importe</th>
+        <th>Categoría</th>
+        <th>Forma de pago</th>
+        <th>Descripción</th>
+        <th>Fecha aplicación</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for transaccion in transacciones %}
+        <tr>
+          <td>{{ transaccion.tipo }}</td>
+          <td>{{ transaccion.fecha_transaccion|date:"d/m/Y" }}</td>
+          <td>{{ transaccion.monto|custom_intcomma }}</td>
+          <td>{{ transaccion.categoria }}</td>
+          <td>{{ transaccion.metodo_pago }}</td>
+          <td>{{ transaccion.descripcion }}</td>
+          <td>{{ transaccion.fecha_aplicacion|date:"d/m/Y" }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5">No se encontraron productos que coincidan con los filtros.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% endblock %}

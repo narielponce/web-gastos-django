@@ -1,0 +1,57 @@
+{% extends 'base_dashboard.html' %} {% load form_tags %}
+{% load form_tags %}
+{% load humanize %}
+{% load custom_filters %}
+
+{% block title %}Informes{% endblock %}
+{% block header %}Ingresos vs Gastos{% endblock%}
+
+{% block content %}
+
+<p>Total de ingresos: {{ total_ingresos|custom_intcomma }}</p>
+<p>Total de gastos: {{ total_gastos|custom_intcomma }}</p>
+<hr>
+<p>Saldo: {{ saldo|custom_intcomma }}</p>
+
+<!-- Agregamos el canvas donde se mostrará el gráfico -->
+<canvas id="myChart" width="400" height="200"></canvas>
+
+<!-- Incluir Chart.js desde CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Datos de ingresos y gastos pasados desde Django
+    const totalIngresos = {{ total_ingresos|safe }};
+    const totalGastos = {{ total_gastos|safe }};
+
+    // Configuración del gráfico de barras
+    const ctx = document.getElementById('myChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Ingresos', 'Gastos'],
+            datasets: [{
+                label: 'Ingresos vs Gastos',
+                data: [totalIngresos, totalGastos],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.5)', // Color para Ingresos
+                    'rgba(255, 99, 132, 0.5)'  // Color para Gastos
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}

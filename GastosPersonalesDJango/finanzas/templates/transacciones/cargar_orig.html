@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cargar Transacción</title>
+    <script>
+        // Función para mostrar/ocultar el campo de cuotas
+        function toggleCuotasField() {
+            const estado = document.getElementById('id_estado').value;
+            const metodoPago = document.getElementById('id_metodo_pago').options[document.getElementById('id_metodo_pago').selectedIndex].text;
+            const cuotasField = document.getElementById('cuotas-field');
+
+            // Muestra el campo de cuotas solo si el estado es "Cuotificado" y el método de pago es "Tarjeta Crédito"
+            if (estado === 'Cuotificado' && metodoPago === 'Tarjeta Crédito') {
+                cuotasField.style.display = 'block';
+            } else {
+                cuotasField.style.display = 'none';
+            }
+        }
+
+        // Inicializar la visibilidad del campo de cuotas al cargar la página
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById('id_estado').addEventListener('change', toggleCuotasField);
+            document.getElementById('id_metodo_pago').addEventListener('change', toggleCuotasField);
+            toggleCuotasField();  // Llamada inicial para establecer el estado del campo de cuotas
+        });
+    </script>
+</head>
+<body>
+    <h1>Cargar Nueva Transacción</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.familia.label_tag }} {{ form.familia }}
+        {{ form.integrante.label_tag }} {{ form.integrante }}
+        {{ form.categoria.label_tag }} {{ form.categoria }}
+        {{ form.descripcion.label_tag }} {{ form.descripcion }}
+        {{ form.metodo_pago.label_tag }} {{ form.metodo_pago }}
+        {{ form.tipo.label_tag }} {{ form.tipo }}
+        {{ form.monto.label_tag }} {{ form.monto }}
+        {{ form.fecha_transaccion.label_tag }} {{ form.fecha_transaccion }}
+        {{ form.estado.label_tag }} {{ form.estado }}
+
+        <!-- Campo de cuotas, oculto por defecto y visible solo cuando corresponde -->
+        <div id="cuotas-field" style="display: none;">
+            {{ form.numero_cuotas.label_tag }} {{ form.numero_cuotas }}
+        </div>
+
+        <button type="submit">Guardar</button>
+    </form>
+
+    <a href="{% url 'lista_transacciones' %}">Ver transacciones</a>
+</body>
+</html>

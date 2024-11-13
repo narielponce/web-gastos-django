@@ -1,0 +1,68 @@
+{% extends 'base_dashboard.html' %} {% load form_tags %}
+{% load form_tags %}
+{% load humanize %}
+{% load custom_filters %}
+
+{% block title %}Generacion resumen tarjeta{% endblock %}
+{% block header %}Resumen tarjeta{% endblock%}
+
+{% block content %}
+
+<div class="box">
+    <form method="get">
+        <div class="field is-grouped is-grouped-multiline">
+            <!-- Campo de selección del mes -->
+            <div class="control is-expanded">
+                <label class="label">{{ form.mes.label }}</label>
+                {{ form.mes|add_class:"input" }}
+            </div>
+
+            <!-- Campo de entrada para el año -->
+            <div class="control is-expanded">
+                <label class="label">{{ form.año.label }}</label>
+                {{ form.año|add_class:"input" }}
+            </div>
+
+            <!-- Botón de búsqueda -->
+            <div class="control">
+                <label class="label" style="visibility: hidden;">&nbsp;</label> <!-- Ocultar etiqueta para alineación -->
+                <button type="submit" class="button is-primary">Buscar</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<hr>
+
+{% if transacciones %}
+    <h3>Vencimientos para el mes {{ form.cleaned_data.mes }} de {{ form.cleaned_data.año }}</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Monto</th>
+                <th>Fecha Transacción</th>
+                <th>Fecha Vencimiento</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaccion in transacciones %}
+                <tr>
+                    <td>{{ transaccion.descripcion }}</td>
+                    <td>${{ transaccion.monto|floatformat:2 }}</td>
+                    <td>{{ transaccion.fecha_transaccion|date:"d/m/Y" }}</td>
+                    <td>{{ transaccion.fecha_aplicacion|date:"d/m/Y" }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Mostrar la suma total de los gastos -->
+    <hr>
+    <p><strong>Total a pagar:</strong> ${{ total_gastos|floatformat:2 }}</p>
+
+{% else %}
+    <p>No se encontraron vencimientos para el mes seleccionado.</p>
+{% endif %}
+{% endblock %}
